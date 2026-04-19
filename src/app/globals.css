@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 96%; /* Light blue-gray */
+    --foreground: 224 71.4% 4.1%;
+    --sidebar: 222 70% 15%; /* Dark Blue */
+    --sidebar-foreground: 210 40% 98%;
+    --card: 255 100% 100%; /* White */
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 255 100% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220 85% 60%; /* Bright Blue */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 224 71.4% 4.1%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 224 71.4% 4.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 85% 60%;
+    --radius: 0.8rem;
+
+    --status-red: 0 72% 51%;
+    --status-orange: 39 92% 56%;
+    --status-yellow: 48 96% 58%;
+    --status-green: 142 71% 45%;
+  }
+
+  .dark {
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --sidebar: 222 70% 15%; /* Dark Blue */
+    --sidebar-foreground: 210 40% 98%;
+    --card: 222 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
+
+    --status-red: 0 72% 51%;
+    --status-orange: 39 92% 56%;
+    --status-yellow: 48 96% 58%;
+    --status-green: 142 71% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Hide scrollbars for the taskbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

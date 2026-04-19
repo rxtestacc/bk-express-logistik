@@ -1,0 +1,29 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "app-logo",
+      "description": "BK-Express Firmenlogo",
+      "imageUrl": "https://storage.googleapis.com/studio-1455012511-1889f.firebasestorage.app/uploads/vehicles/unassigned/sonstiges/1775519941728_LOGO2.png?GoogleAccessId=firebase-adminsdk-fbsvc%40studio-1455012511-1889f.iam.gserviceaccount.com&Expires=4102444800&Signature=JkkvVvZaP7ruFKO5rRzPbexcXX7NKfd2iXm9NP8DpaY2j2GzUYh8W9hJ%2B%2BWqD60YsSJXPSGFUXpEgbFPnQXBuP3Cjb2zLzbDl0BD%2BMXUt5m55D9U9%2F%2BbzLAQk5pQY1LM85zAQQiusvny%2FQlnRr%2Fk%2FDRqIJF8%2FrnkzlwZoJB6WXnvfBuIZPzdbgskwQc%2BfnVtgQuy8R0dXukm7ziRSTdnm8KTrOzQ2eFf7VVRmeFH1moowtDCci3BQbEXOIoayr6qF8E8JwE%2BXdu91PtVKhfwcFZMp83KcLTLNMdKmesuD4b5R9fNVFMnndCl4NyWIBh66PlKReMSgxzz3QD8djNmtA%3D%3D",
+      "imageHint": "company logo"
+    },
+    {
+      "id": "hero-dashboard",
+      "description": "Moderner Fuhrpark-Hintergrund für das Dashboard",
+      "imageUrl": "https://picsum.photos/seed/fleet1/1200/400",
+      "imageHint": "fleet dashboard"
+    },
+    {
+      "id": "vehicle-placeholder",
+      "description": "Standard weißer Transporter",
+      "imageUrl": "https://picsum.photos/seed/van1/600/400",
+      "imageHint": "white van"
+    },
+    {
+      "id": "driver-placeholder",
+      "description": "Professionelles Fahrer Porträt",
+      "imageUrl": "https://picsum.photos/seed/driver1/400/400",
+      "imageHint": "professional driver"
+    }
+  ]
+}
