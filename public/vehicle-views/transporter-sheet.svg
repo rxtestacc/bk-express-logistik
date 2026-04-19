@@ -1,0 +1,52 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" stroke="#1B1B1B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+
+  <!-- Main Side View (Left) -->
+  <g transform="translate(50, 150) scale(1)">
+    <path d="M 60,180 H 30 C 20,180 10,170 10,160 V 80 C 10,70 20,60 30,60 H 130 L 200,10 L 450,10 H 780 L 820,60 H 950 C 960,60 970,70 970,80 V 160 C 970,170 960,180 950,180 H 920"/>
+    <path d="M 170,180 H 810"/>
+    <path d="M 200,10 V 180"/>
+    <path d="M 450,10 V 180"/>
+    <path d="M 170,60 H 450"/>
+    <path d="M 780,10 L 820,60"/>
+    <path d="M 470,60 H 760"/>
+    
+    <!-- Windows -->
+    <path d="M 210,20 H 440 V 55 H 210 Z"/>
+    
+    <!-- Wheels -->
+    <circle cx="120" cy="180" r="40"/>
+    <circle cx="850" cy="180" r="40"/>
+
+    <!-- Lights -->
+    <path d="M 20,70 H 40 L 45,80 L 40,90 H 20 Z"/>
+    <path d="M 940,70 H 960 V 90 H 940 Z"/>
+  </g>
+
+  <!-- Top View -->
+  <g transform="translate(140, 450) scale(0.8)">
+    <path d="M 130,10 L 200,60 H 780 L 850,10 H 130 Z"/>
+    <rect x="200" y="60" width="580" height="150"/>
+    <path d="M 780,60 L 820,110 H 160 L 200,60"/>
+  </g>
+
+  <!-- Front View -->
+  <g transform="translate(950, 420) scale(0.5)">
+    <rect x="10" y="10" width="280" height="200" rx="15"/>
+    <path d="M 10,60 H 290"/>
+    <path d="M 50,70 H 250 V 150 H 50 Z"/>
+    <path d="M 10,180 H 290"/>
+    <circle cx="70" cy="40" r="15"/>
+    <circle cx="230" cy="40" r="15"/>
+  </g>
+  
+  <!-- Rear View -->
+  <g transform="translate(950, 120) scale(0.5)">
+    <rect x="10" y="10" width="280" height="280" rx="15"/>
+    <path d="M 150,10 V 290"/>
+    <rect x="30" y="30" width="100" height="80"/>
+    <rect x="170" y="30" width="100" height="80"/>
+    <rect x="20" y="240" width="80" height="20"/>
+    <rect x="200" y="240" width="80" height="20"/>
+  </g>
+
+</svg>
