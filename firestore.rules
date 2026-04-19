@@ -1,0 +1,161 @@
+
+/**
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset is in prototyping mode and grants open read and write access to all collections.
+ * This is ONLY for initial development and should NEVER be used in a production environment.
+ *
+ * Data Structure:
+ * The Firestore database consists of several top-level collections including `vehicles`, `vehicle_events`, `vehicle_documents`,
+ * `vehicle_tires`, `reminders`, `tasks`, `task_comments`, `drivers`, `audit_logs`, and `pins`.
+ *
+ * Key Security Decisions:
+ * - All read and write access is granted without authentication or authorization checks.
+ * - This configuration is highly insecure and intended only for rapid prototyping.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Grants open read and write access to all documents in the `vehicles` collection.
+     * @path /databases/{database}/documents/vehicles/{vehicleId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete vehicle documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /vehicles/{vehicleId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `vehicle_events` collection.
+     * @path /databases/{database}/documents/vehicle_events/{eventId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete vehicle event documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /vehicle_events/{eventId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `vehicle_documents` collection.
+     * @path /databases/{database}/documents/vehicle_documents/{documentId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete vehicle document documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /vehicle_documents/{documentId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `vehicle_tires` collection.
+     * @path /databases/{database}/documents/vehicle_tires/{tireId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete vehicle tire documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /vehicle_tires/{tireId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `reminders` collection.
+     * @path /databases/{database}/documents/reminders/{reminderId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete reminder documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /reminders/{reminderId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `tasks` collection.
+     * @path /databases/{database}/documents/tasks/{taskId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete task documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /tasks/{taskId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `task_comments` collection.
+     * @path /databases/{database}/documents/task_comments/{commentId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete task comment documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /task_comments/{commentId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `drivers` collection.
+     * @path /databases/{database}/documents/drivers/{driverId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete driver documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /drivers/{driverId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `audit_logs` collection.
+     * @path /databases/{database}/documents/audit_logs/{logId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete audit log documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to all documents in the `pins` collection.
+     * @path /databases/{database}/documents/pins/{pinId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete pin documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /pins/{pinId} {
+      allow read, write: if true;
+    }
+    
+    /**
+     * @description Grants open read and write access to all documents in the `contracts` collection.
+     * @path /databases/{database}/documents/contracts/{contractId}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete contract documents.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /contracts/{contractId} {
+        allow read, write: if true;
+    }
+
+    /**
+     * @description Grants open read and write access to any document at any path.
+     * @path /databases/{database}/documents/{document=**}
+     * @allow (create, read, update, delete) - Any user can create, read, update, or delete any document.
+     * @deny (none) - There are no restrictions in this prototyping mode.
+     * @principle Open access for prototyping.
+     */
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

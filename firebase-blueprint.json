@@ -1,0 +1,344 @@
+
+{
+  "entities": {
+    "Vehicle": {
+      "title": "Vehicle",
+      "type": "object",
+      "description": "Represents a vehicle in the fleet.",
+      "properties": {
+        "vin": { "type": "string", "description": "Vehicle Identification Number." },
+        "hsn": { "type": "string", "description": "Herstellerschlüsselnummer (Manufacturer Key Number)." },
+        "tsn": { "type": "string", "description": "Typschlüsselnummer (Type Key Number)." },
+        "license_plate": { "type": "string", "description": "License plate number of the vehicle." },
+        "make": { "type": "string", "description": "Make of the vehicle (e.g., BMW, Mercedes)." },
+        "model": { "type": "string", "description": "Model of the vehicle (e.g., 320i, C-Class)." },
+        "variant": { "type": "string", "description": "Variant of the vehicle model." },
+        "year": { "type": "number", "description": "Year of manufacture." },
+        "first_registration": { "type": "string", "format": "date-time", "description": "Date of the vehicle's first registration." },
+        "engine": { "type": "string", "description": "Engine type of the vehicle." },
+        "fuel_type": { "type": "string", "enum": ["Benzin", "Diesel", "Elektro", "Hybrid", "LPG", "CNG"] },
+        "power_kw": { "type": "number", "description": "Power of the vehicle in kilowatts." },
+        "tire_size": { "type": "string", "description": "Authorized tire dimensions for the vehicle." },
+        "color": { "type": "string", "description": "Color of the vehicle." },
+        "mileage_km": { "type": "number", "description": "Mileage of the vehicle in kilometers." },
+        "mileage_updated_at": { "type": "string", "format": "date-time", "description": "Date when the mileage was last updated." },
+        "status": { "type": "string", "enum": ["aktiv", "in_werkstatt", "inaktiv"] },
+        "carrier": { "type": "string", "enum": ["GLS", "Hermes", "Stadtbote"], "description": "The carrier or designation for the vehicle (e.g., GLS, Hermes)." },
+        "fleet_type": { "type": "string", "enum": ["Ja", "Überlassung"], "description": "Classification in the fleet." },
+        "location": { "type": "string", "description": "Current location of the vehicle." },
+        "notes": { "type": "string", "description": "Additional notes about the vehicle." },
+        "acquisition_type": { "type": "string", "enum": ["cash", "leasing", "financing"], "description": "The method of vehicle acquisition." },
+        "purchase_date": { "type": "string", "format": "date-time", "description": "Date of vehicle purchase." },
+        "purchase_price": { "type": "number", "description": "Purchase price of the vehicle." },
+        "leasing_start": { "type": "string", "format": "date-time", "description": "Start date of the leasing contract." },
+        "leasing_end": { "type": "string", "format": "date-time", "description": "End date of the leasing contract." },
+        "leasing_rate_eur": { "type": "number", "description": "Monthly leasing rate in EUR." },
+        "leasing_annual_mileage": { "type": "number", "description": "Annual mileage limit for the leasing contract in km." },
+        "leasing_company": { "type": "string", "description": "The leasing company." },
+        "financing_start": { "type": "string", "format": "date-time", "description": "Start date of the financing contract." },
+        "financing_end": { "type": "string", "format": "date-time", "description": "End date of the financing contract." },
+        "financing_rate_eur": { "type": "number", "description": "Monthly financing rate in EUR." },
+        "financing_bank": { "type": "string", "description": "The financing bank." },
+        "warranty_end": { "type": "string", "format": "date-time", "description": "Date when the warranty ends." },
+        "tuv_due": { "type": "string", "format": "date-time", "description": "Date when the next TÜV inspection is due." },
+        "next_due_events": { "type": "object", "description": "Map of next due events and their timestamps." },
+        "open_tasks_count": { "type": "number", "description": "Number of open tasks associated with the vehicle." },
+        "total_costs_eur": { "type": "number", "description": "Total costs for the vehicle in EUR." }
+      },
+      "required": ["vin", "license_plate", "make", "model", "mileage_km", "first_registration", "tuv_due"]
+    },
+    "VehicleEvent": {
+      "title": "VehicleEvent",
+      "type": "object",
+      "description": "Represents an event related to a vehicle (e.g., inspection, repair).",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to Vehicle." },
+        "driverId": { "type": "string", "description": "Reference to Driver." },
+        "type": { "type": "string", "enum": ["inspection", "repair", "damage", "tuv", "au", "uvv", "tire_change", "service", "fuel", "trip", "other", "verkehrsunfall"] },
+        "title": { "type": "string", "description": "Title of the event." },
+        "due_date": { "type": "string", "format": "date-time", "description": "Date and time of the event." },
+        "odometer_km": { "type": "number", "description": "Odometer reading at the time of the event in kilometers." },
+        "cost_eur": { "type": "number", "description": "Cost of the event in EUR." },
+        "vendor": { "type": "string", "description": "Vendor who performed the service." },
+        "notes": { "type": "string", "description": "Additional notes about the event." },
+        "status": { "type": "string", "enum": ["open", "in_progress", "done"], "description": "The current status of the event." },
+        "created_by_name": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "completed_by_name": { "type": "string", "description": "Name of the user who marked the event as done." },
+        "completed_at": { "type": "string", "format": "date-time", "description": "Timestamp when the event was marked as done." },
+        "police_involved": { "type": "boolean", "description": "Indicates if police were involved in the incident." },
+        "police_case_number": { "type": "string", "description": "The police case number, if applicable." },
+        "fault": { "type": "string", "enum": ["own", "third_party", "unknown"], "description": "Indicates who was at fault for the incident." },
+        "third_party": {
+          "type": "object",
+          "description": "Information about the third party involved in an accident.",
+          "properties": {
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "phone": { "type": "string" },
+            "license_plate": { "type": "string" },
+            "insurance_company": { "type": "string" },
+            "insurance_policy_number": { "type": "string" },
+            "vehicle_details": { "type": "string", "description": "Make, model, and color of the third party's vehicle." }
+          }
+        }
+      },
+      "required": ["vehicleId", "type", "due_date", "odometer_km", "status", "created_by_name", "created_at", "updated_at"]
+    },
+    "DamageMarker": {
+      "title": "DamageMarker",
+      "type": "object",
+      "description": "Represents a single damage point on a vehicle map.",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to the vehicle." },
+        "eventId": { "type": "string", "description": "Reference to the damage event." },
+        "view": { "type": "string", "enum": ["front", "rear", "left", "right", "top"], "description": "The view of the vehicle where the marker is placed." },
+        "xPct": { "type": "number", "description": "The x-coordinate of the marker in percent." },
+        "yPct": { "type": "number", "description": "The y-coordinate of the marker in percent." },
+        "status": { "type": "string", "enum": ["open", "in_progress", "done"], "description": "The status of the repair for this specific damage." },
+        "note": { "type": "string", "description": "A short note about the specific damage." },
+        "color": { "type": "string", "description": "Custom color for the marker." },
+        "createdBy": { "type": "string", "description": "Name of the user who created the marker." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when the marker was created." }
+      },
+      "required": ["vehicleId", "eventId", "xPct", "yPct", "status", "createdBy", "createdAt"]
+    },
+    "VehicleDocument": {
+      "title": "VehicleDocument",
+      "type": "object",
+      "description": "Represents a document associated with a vehicle.",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to Vehicle." },
+        "category": { "type": "string", "enum": ["kauf", "leasing", "finanzierung", "rechnung", "gutachten", "handbuch", "sonstiges"] },
+        "title": { "type": "string", "description": "Title of the document." },
+        "uploaded_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["vehicleId", "category", "title", "uploaded_at"]
+    },
+    "VehicleTire": {
+      "title": "VehicleTire",
+      "type": "object",
+      "description": "Represents tires associated with a vehicle.",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to Vehicle." },
+        "position": { "type": "string", "enum": ["set_sommer", "set_winter"] },
+        "brand": { "type": "string" },
+        "dimension": { "type": "string" },
+        "dot": { "type": "string" },
+        "tread_mm": { "type": "number" },
+        "storage_location": { "type": "string" }
+      },
+      "required": ["vehicleId", "position", "brand", "dimension"]
+    },
+    "Reminder": {
+      "title": "Reminder",
+      "type": "object",
+      "description": "Represents a reminder for vehicle services or events.",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to Vehicle." },
+        "driverId": { "type": "string", "description": "Reference to Driver." },
+        "kind": { "type": "string", "enum": ["service", "hu", "au", "uvv", "leasing_end", "warranty_end", "financing_end", "tire_change", "inspection", "tuv", "driver_license_expiry", "other"] },
+        "due_date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["open", "done"] },
+        "days_left": { "type": "number" },
+        "last_notified_at": { "type": "string", "format": "date-time" },
+        "sourceEventId": { "type": "string", "description": "Reference to the source event or vehicle that triggered this reminder." }
+      },
+      "required": ["kind", "due_date", "status"]
+    },
+    "Task": {
+      "title": "Task",
+      "type": "object",
+      "description": "Represents a task related to a vehicle or driver.",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Reference to Vehicle." },
+        "driverId": { "type": "string", "description": "Reference to Driver." },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "in_progress", "done"] },
+        "due_date": { "type": "string", "format": "date-time" },
+        "assignee_name": { "type": "string" },
+        "created_by_name": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "completed_by_name": { "type": "string", "description": "Name of the user who marked the task as done." },
+        "completed_at": { "type": "string", "format": "date-time", "description": "Timestamp when the task was marked as done." }
+      },
+      "required": ["title", "description", "status", "due_date", "assignee_name", "created_by_name", "created_at", "updated_at"]
+    },
+    "Driver": {
+      "title": "Driver",
+      "type": "object",
+      "description": "Represents a driver.",
+      "properties": {
+        "first_name": { "type": "string" },
+        "last_name": { "type": "string" },
+        "birth_date": { "type": "string", "format": "date-time" },
+        "birth_place": { "type": "string", "description": "Place of birth" },
+        "nationality": { "type": "string", "description": "Nationality" },
+        "employment_start_date": { "type": "string", "format": "date-time", "description": "Date of employment start." },
+        "employee_number": { "type": "string", "description": "Employee number." },
+        "zsb": { "type": "string", "description": "ZSB" },
+        "health_insurance": { "type": "string", "description": "Health insurance company." },
+        "address": { "type": "object", "properties": { "street": {"type": "string"}, "zip": {"type": "string"}, "city": {"type": "string"} } },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "carrier": { "type": "string", "enum": ["GLS", "Hermes", "Stadtbote"], "description": "The carrier or designation for the driver (e.g., GLS, Hermes)." },
+        "license_number": { "type": "string", "description": "Driver's license number." },
+        "license_issue_date": { "type": "string", "format": "date-time", "description": "Date the license was issued." },
+        "license_expiry_date": { "type": "string", "format": "date-time", "description": "Date the license expires." },
+        "license_issue_country": { "type": "string", "description": "Country that issued the license." },
+        "license_classes": { "type": "array", "items": { "type": "string" } },
+        "assigned_vehicle_ids": { "type": "array", "items": { "type": "string" }, "description": "List of vehicle IDs assigned to the driver." }
+      },
+      "required": ["first_name", "last_name", "birth_date", "address", "phone", "license_classes"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "type": "object",
+      "description": "Represents an audit log entry for changes made to entities.",
+      "properties": {
+        "entity": { "type": "string", "enum": ["vehicle", "driver", "task", "event", "document"] },
+        "entityId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userName": { "type": "string" },
+        "action": { "type": "string", "enum": ["create", "update", "delete"] },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": { "type": "string" },
+              "oldValue": { "type": "any" },
+              "newValue": { "type": "any" }
+            },
+            "required": ["field", "newValue"]
+          }
+        }
+      },
+      "required": ["entity", "entityId", "timestamp", "userName", "action", "changes"]
+    },
+    "Pin": {
+      "title": "Pin",
+      "type": "object",
+      "description": "Stores PINs for role-based access.",
+      "properties": {
+        "pin": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin", "Dispo", "Mechaniker/Fahrer"] },
+        "active": { "type": "boolean" }
+      },
+      "required": ["pin", "name", "role", "active"]
+    },
+     "VehicleHandover": {
+      "title": "VehicleHandover",
+      "type": "object",
+      "description": "Represents a handover event of a vehicle from one driver to another.",
+      "properties": {
+        "vehicleId": { "type": "string" },
+        "vehicleLabel": { "type": "string" },
+        "fromDriverId": { "type": "string" },
+        "fromDriverName": { "type": "string" },
+        "toDriverId": { "type": "string" },
+        "toDriverName": { "type": "string" },
+        "handoverAt": { "type": "string", "format": "date-time" },
+        "odometerKm": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "completed", "new_damage", "in_review", "closed"] },
+        "statusNotes": { "type": "string", "description": "Notes related to status changes." },
+        "existingDamageConfirmed": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "checklistEnabled": { "type": "boolean" },
+        "checklist": { "type": "array", "items": { "type": "object" } },
+        "requiredPhotos": { "type": "object" },
+        "newDamageEventId": { "type": "string" },
+        "additionalPhotos": {
+          "type": "array",
+          "description": "Optional additional photos taken during handover.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string" },
+              "metadataText": { "type": "string" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdByName": { "type": "string" }
+      },
+      "required": ["vehicleId", "toDriverId", "handoverAt", "status"]
+    },
+    "Contract": {
+      "title": "Contract",
+      "type": "object",
+      "description": "Represents a contract for a vehicle (leasing, financing, etc.).",
+      "properties": {
+        "vehicleId": { "type": "string", "description": "Associated vehicle ID, can be null before confirmation." },
+        "vehicleMatchCandidateIds": { "type": "array", "items": { "type": "string" }, "description": "Suggested vehicle IDs based on analysis." },
+        "matchConfidence": { "type": "string", "enum": ["high", "medium", "low", "none"] },
+        "matchReasons": { "type": "array", "items": { "type": "string" } },
+        "matchStatus": { "type": "string", "enum": ["unverified", "verified", "corrected"], "description": "Status of the vehicle match." },
+        "contractStatus": { "type": "string", "enum": ["active", "expiring_soon", "expired"], "description": "Calculated status of the contract." },
+        "contractType": { "type": "string", "enum": ["leasing", "financing", "purchase", "warranty", "maintenance", "insurance", "other"] },
+        "providerName": { "type": "string" },
+        "contractNumber": { "type": "string" },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "cancellationDeadline": { "type": "string", "format": "date-time" },
+        "monthlyCostEur": { "type": "number" },
+        "yearlyCostEur": { "type": "number" },
+        "oneTimeCostEur": { "type": "number" },
+        "currency": { "type": "string", "enum": ["EUR"] },
+        "notes": { "type": "string" },
+        "responsibleName": { "type": "string" },
+        "extracted": {
+          "type": "object",
+          "properties": {
+            "licensePlate": { "type": "string" },
+            "vin": { "type": "string" },
+            "make": { "type": "string" },
+            "model": { "type": "string" },
+            "datesFound": { "type": "array", "items": { "type": "object" } },
+            "amountsFound": { "type": "array", "items": { "type": "object" } },
+            "rawTextSnippet": { "type": "string" }
+          }
+        },
+        "summary": { "type": "string" },
+        "documentRef": {
+          "type": "object",
+          "properties": {
+            "fileName": { "type": "string" },
+            "fileType": { "type": "string", "enum": ["pdf", "image", "other"] },
+            "storagePath": { "type": "string" },
+            "downloadUrl": { "type": "string" },
+            "localPreviewNote": { "type": "string" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdByName": { "type": "string" },
+        "updatedByName": { "type": "string" }
+      },
+      "required": ["matchStatus", "contractStatus", "contractType", "createdAt", "createdByName"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "vehicles": { "schema": { "$ref": "#/entities/Vehicle" }, "description": "Stores all vehicle data." },
+    "vehicle_events": { "schema": { "$ref": "#/entities/VehicleEvent" }, "description": "Stores history and cost data for vehicle events." },
+    "damage_markers": { "schema": { "$ref": "#/entities/DamageMarker" }, "description": "Stores individual damage markers for the vehicle damage map." },
+    "vehicle_documents": { "schema": { "$ref": "#/entities/VehicleDocument" }, "description": "Stores documents associated with vehicles." },
+    "vehicle_tires": { "schema": { "$ref": "#/entities/VehicleTire" }, "description": "Stores tire information for vehicles." },
+    "reminders": { "schema": { "$ref": "#/entities/Reminder" }, "description": "Stores reminders for vehicle-related tasks." },
+    "tasks": { "schema": { "$ref": "#/entities/Task" }, "description": "Stores tasks related to vehicles or drivers." },
+    "drivers": { "schema": { "$ref": "#/entities/Driver" }, "description": "Stores driver information." },
+    "audit_logs": { "schema": { "$ref": "#/entities/AuditLog" }, "description": "Stores audit logs for changes made to entities." },
+    "pins": { "schema": { "$ref": "#/entities/Pin" }, "description": "Stores PINs for role-based access." },
+    "vehicle_handovers": { "schema": { "$ref": "#/entities/VehicleHandover" }, "description": "Stores vehicle handover protocols." },
+    "contracts": { "schema": { "$ref": "#/entities/Contract" }, "description": "Stores all contract data." }
+  }
+}
