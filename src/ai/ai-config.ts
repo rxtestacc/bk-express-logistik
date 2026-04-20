@@ -6,13 +6,13 @@
 import 'server-only';
 
 // The default model to use for standard tasks. Fast and cost-effective.
-const AI_MODEL_DEFAULT = process.env.AI_MODEL || 'gemini-2.5-flash lite';
+const AI_MODEL_DEFAULT = process.env.AI_MODEL || 'gemini-2.5-flash-lite';
 
 // A more powerful model for complex tasks like detailed document analysis.
-const AI_PRO_MODEL_DEFAULT = process.env.AI_PRO_MODEL || 'gemini-2.5 flash lite';
+const AI_PRO_MODEL_DEFAULT = process.env.AI_PRO_MODEL || 'gemini-2.5 flash-lite';
 
 // Fallback model in case the preferred ones are not available.
-const AI_FALLBACK_MODEL = 'gemini-2.5-flash lite';
+const AI_FALLBACK_MODEL = 'gemini-2.5-flash-lite';
 
 /**
  * Returns an ordered list of model candidates to try for a standard request.
