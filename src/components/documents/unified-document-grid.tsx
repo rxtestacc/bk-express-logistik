@@ -151,9 +151,15 @@ export function UnifiedDocumentGrid({ vehicleId, driverId, relatedEntityId, show
         if (driverId) return query(collection(firestore, 'driver_documents'), where('driverId', '==', driverId), orderBy('uploaded_at', 'desc'));
         return query(collection(firestore, 'driver_documents'), orderBy('uploaded_at', 'desc'));
     }, [firestore, vehicleId, driverId]);
+    
+    const generalDocsQuery = useMemoFirebase(() => {
+        if (!firestore || vehicleId || driverId) return null;
+        return query(collection(firestore, 'general_documents'), orderBy('uploaded_at', 'desc'));
+    }, [firestore, vehicleId, driverId]);
 
     const { data: vDocs, isLoading: isVLoading } = useCollection(vehicleDocsQuery);
     const { data: dDocs, isLoading: isDLoading } = useCollection(driverDocsQuery);
+    const { data: gDocs, isLoading: isGLoading } = useCollection(generalDocsQuery);
 
     const getSourceUrl = (bundle: DocumentBundle) => {
         switch (bundle.sourceType) {
@@ -251,6 +257,14 @@ export function UnifiedDocumentGrid({ vehicleId, driverId, relatedEntityId, show
                 undefined, undefined, d.driverId, dr ? `${dr.first_name} ${dr.last_name}` : undefined, d.relatedEntityId, d.relatedEntityType
             );
         });
+        
+        gDocs?.forEach(d => {
+            addToFileBundle(
+                d.id, 'manual', d.title, d.category, 'Allgemein', d.uploaded_at, d.uploaded_by_name,
+                { url: d.downloadUrl, title: d.title, fileType: d.fileType, storagePath: d.storagePath },
+                undefined, undefined, undefined, undefined, d.relatedEntityId, d.relatedEntityType
+            );
+        });
 
         contracts.forEach(c => {
             if (c.documentRef && (!vehicleId || c.vehicleId === vehicleId)) {
@@ -318,7 +332,7 @@ export function UnifiedDocumentGrid({ vehicleId, driverId, relatedEntityId, show
         }
 
         return allBundles.sort((a, b) => getMillis(b.uploadedAt) - getMillis(a.uploadedAt));
-    }, [vDocs, dDocs, vehicles, drivers, contracts, events, handovers, tasks, vehicleId, driverId, relatedEntityId]);
+    }, [vDocs, dDocs, gDocs, vehicles, drivers, contracts, events, handovers, tasks, vehicleId, driverId, relatedEntityId]);
 
     const sourceTypeCounts = useMemo(() => {
         const counts: Record<string, number> = { all: documentBundles.length, manual: 0, contract: 0, event: 0, handover: 0 };
@@ -360,7 +374,7 @@ export function UnifiedDocumentGrid({ vehicleId, driverId, relatedEntityId, show
                 if (!bundle) continue;
 
                 if (bundle.sourceType === 'manual') {
-                    const colName = bundle.driverId ? 'driver_documents' : 'vehicle_documents';
+                    const colName = bundle.driverId ? 'driver_documents' : bundle.vehicleId ? 'vehicle_documents' : 'general_documents';
                     const docRef = doc(firestore, colName, bundle.sourceId);
                     
                     const mainFile = bundle.files[0];
@@ -397,7 +411,7 @@ export function UnifiedDocumentGrid({ vehicleId, driverId, relatedEntityId, show
         }
     };
 
-    if (isDashboardLoading || isVLoading || isDLoading) {
+    if (isDashboardLoading || isVLoading || isDLoading || isGLoading) {
         return <div className="grid grid-cols-1 md:grid-cols-3 gap-4">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}</div>;
     }
 

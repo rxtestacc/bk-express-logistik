@@ -184,7 +184,13 @@ export function DocumentManager({ entityId, entityType, relatedEntityId, related
                                 relatedEntityType: relatedEntityType || null,
                             };
 
-                            const collectionName = targetType === 'driver' ? 'driver_documents' : 'vehicle_documents';
+                            const collectionName = 
+                                targetType === 'general' 
+                                    ? 'general_documents' 
+                                    : targetType === 'driver' 
+                                        ? 'driver_documents' 
+                                        : 'vehicle_documents';
+
                             await setDoc(doc(collection(firestore, collectionName)), docData);
 
                             toast({ title: 'Erfolgreich gespeichert', description: `"${title}" ist nun im System.` });
