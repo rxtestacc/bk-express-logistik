@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Calendar, AlertTriangle, MoreHorizontal, Eye, Search, ArrowUpDown, Clock, FilterX, ChevronDown, ChevronUp } from 'lucide-react';
@@ -72,12 +72,11 @@ const getGroupStyling = (type: 'overdue' | 'dueSoon' | 'upcoming') => {
 }
 
 
-const ReminderTable = ({ reminders, title, type }: { reminders: ProcessedReminder[]; title: string; type: 'overdue' | 'dueSoon' | 'upcoming' }) => {
+const ReminderTableGroup = ({ reminders, title, type }: { reminders: ProcessedReminder[]; title: string; type: 'overdue' | 'dueSoon' | 'upcoming' }) => {
     const router = useRouter();
     const { bgColor, textColor, dotColor } = getGroupStyling(type);
 
     const handleNavigate = (reminder: ProcessedReminder) => {
-        // Prefer sourceEventId for direct navigation to the maintenance/service record
         if (reminder.id && !reminder.id.includes('-')) {
              router.push(`/ereignisse/${reminder.id}`);
              return;
@@ -174,6 +173,19 @@ export function UpcomingReminders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' }>({ key: 'daysLeft', direction: 'asc' });
   const [isOpen, setIsOpen] = useState(true);
+  const [isUpcomingLaterOpen, setIsUpcomingLaterOpen] = useState(false);
+  const router = useRouter();
+
+  const handleNavigate = (reminder: ProcessedReminder) => {
+    if (reminder.id && !reminder.id.includes('-')) {
+        router.push(`/ereignisse/${reminder.id}`);
+        return;
+    }
+    const link = reminder.vehicleId ? `/fahrzeuge/${reminder.vehicleId}` : reminder.driverId ? `/fahrer/${reminder.driverId}` : '#';
+    if (link !== '#') {
+        router.push(link);
+    }
+  };
 
   const sortedAndFilteredReminders = useMemo(() => {
     let filteredReminders = reminders ?? [];
@@ -220,17 +232,15 @@ export function UpcomingReminders() {
       return <ArrowUpDown className="ml-2 h-3.5 w-3.5 text-primary" />; 
   };
 
-
-  const { overdue, dueSoon, upcoming } = useMemo(() => {
+  const { overdue, dueSoon, upcomingLater } = useMemo(() => {
     const list = sortedAndFilteredReminders ?? [];
-    // Only group if we are sorting by date (default)
     if (sortConfig.key !== 'daysLeft' || sortConfig.direction !== 'asc') {
-        return { overdue: [], dueSoon: [], upcoming: list };
+        return { overdue: [], dueSoon: [], upcomingLater: list };
     }
     return {
-      overdue:  list.filter(r => r.urgency === 'overdue'),
-      dueSoon:  list.filter(r => r.urgency === 'high'),
-      upcoming: list.filter(r => ['medium', 'low'].includes(r.urgency)),
+      overdue:       list.filter(r => r.daysLeft < 0),
+      dueSoon:       list.filter(r => r.daysLeft >= 0 && r.daysLeft <= 30),
+      upcomingLater: list.filter(r => r.daysLeft > 30),
     };
   }, [sortedAndFilteredReminders, sortConfig]);
 
@@ -323,12 +333,82 @@ export function UpcomingReminders() {
                     <TableBody>
                         {showGroupedView ? (
                             <>
-                                <ReminderTable reminders={overdue} title="Überfällig" type="overdue" />
-                                <ReminderTable reminders={dueSoon} title="Demnächst fällig" type="dueSoon" />
-                                <ReminderTable reminders={upcoming} title="Geplant" type="upcoming" />
+                                <ReminderTableGroup reminders={overdue} title="Überfällig" type="overdue" />
+                                <ReminderTableGroup reminders={dueSoon} title="Fällig in den nächsten 30 Tagen" type="dueSoon" />
+                                
+                                {upcomingLater.length > 0 && (
+                                    <>
+                                        <TableRow 
+                                            className={cn('hover:bg-muted/40 transition-colors border-t-8 border-background select-none cursor-pointer', getGroupStyling('upcoming').bgColor)}
+                                            onClick={() => setIsUpcomingLaterOpen(!isUpcomingLaterOpen)} >
+                                            <TableCell colSpan={5} className={cn("py-2.5 px-4", getGroupStyling('upcoming').textColor)}>
+                                                <div className="flex items-center gap-2 w-full">
+                                                    <span className={cn("h-2 w-2 rounded-full", getGroupStyling('upcoming').dotColor)}></span>
+                                                    <span className="uppercase tracking-[0.15em] text-[10px] font-black">Später als 30 Tage</span>
+                                                    <Badge variant="outline" className="ml-1 bg-background/50 border-none text-[10px]">{upcomingLater.length}</Badge>
+                                                    <ChevronDown className={cn("h-4 w-4 ml-auto transition-transform", isUpcomingLaterOpen && "rotate-180")} />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {isUpcomingLaterOpen && upcomingLater.map((r) => {
+                                            const isOverdue = r.urgency === 'overdue';
+                                            return (
+                                                <TableRow
+                                                    key={r.id}
+                                                    className="group transition-all duration-200 cursor-pointer hover:bg-muted/30"
+                                                    onClick={() => handleNavigate(r)} >
+                                                    <TableCell className="pl-6">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 rounded-lg transition-colors bg-primary/5 text-primary group-hover:bg-primary/10">
+                                                                <r.icon className="h-4 w-4" />
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-sm font-semibold">{r.title}</span>
+                                                                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{reminderKindTranslations[r.kind] || r.kind}</span>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-bold tracking-tight">{r.bezug}</span>
+                                                            <span className="text-[11px] text-muted-foreground truncate max-w-[150px]">{r.fahrzeugMarkeModell}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col items-start gap-1">
+                                                            <span className="text-sm font-medium">{format(r.dueDate, 'dd. MMMM yyyy', { locale: de })}</span>
+                                                            <UrgencyBadge reminder={r} />
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right pr-6" onClick={(e) => e.stopPropagation()}>
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end" className="w-48">
+                                                                <DropdownMenuItem onClick={() => handleNavigate(r)}>
+                                                                    <Eye className="mr-2 h-4 w-4" />
+                                                                    Details anzeigen
+                                                                </DropdownMenuItem>
+                                                                {r.vehicleId && (
+                                                                    <DropdownMenuItem onClick={() => router.push(`/fahrzeuge/${r.vehicleId}`)}>
+                                                                        <FilterX className="mr-2 h-4 w-4" />
+                                                                        Zum Fahrzeug
+                                                                    </DropdownMenuItem>
+                                                                )}
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </>
+                                )}
                             </>
                         ) : (
-                            <ReminderTable reminders={sortedAndFilteredReminders} title="Suchergebnisse" type="upcoming" />
+                            <ReminderTableGroup reminders={sortedAndFilteredReminders} title="Suchergebnisse" type="upcoming" />
                         )}
                     </TableBody>
                 </Table>
